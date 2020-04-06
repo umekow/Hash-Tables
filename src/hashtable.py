@@ -25,11 +25,9 @@ class HashTable:
 
         You may replace the Python hash with DJB2 as a stretch goal.
         '''
-
-        hash = 0
+        hash = 7
         for i in range(0, len(key)): 
             hash = (hash + ord(key[i]) * i) % self.capacity
-
         return hash
 
 
@@ -61,9 +59,6 @@ class HashTable:
 
         Fill this in.
         '''
-
-        if len(self.storage) == self.capacity: 
-            pass
        
         address = self._hash(key)
 
@@ -100,9 +95,10 @@ class HashTable:
         address = self._hash(key)
         current = self.storage[address]
         if len(current):
-            for i in range(len(self.storage)): 
-                if current[i][0] == key: 
-                    return current[i][1]
+            return current[1]
+            # for i in range(len(self.storage)): 
+            #     if current[i][0] == key: 
+            #         return current[i][1]
 
         return None
 
@@ -119,8 +115,11 @@ class HashTable:
 hm = HashTable(3)
 
 hm.insert('rice', 'whatever')
+hm.insert('gum', 'mint')
+hm.insert('chips', 'bbq flavored')
 
-print(hm.storage)
+
+print(hm.retrieve('gum'))
 
 
 # if __name__ == "__main__":
