@@ -9,6 +9,9 @@ class LinkedPair:
         self.value = value
         self.next = None
 
+    def __repr__(self):
+        return f"({self.key}, {self.value})"
+
 class HashTable:
     '''
     A hash table that with `capacity` buckets
@@ -25,9 +28,9 @@ class HashTable:
 
         You may replace the Python hash with DJB2 as a stretch goal.
         '''
-        hash = 7
+        hash = 2505
         for i in range(0, len(key)): 
-            hash = (hash + ord(key[i]) * i) % self.capacity
+            hash = (hash + ord(key[i]) ** i) % self.capacity
         return hash
 
 
@@ -62,15 +65,31 @@ class HashTable:
        
         address = self._hash(key)
 
-        if self.storage[address]: 
-            warnings.warn('Hash collision')
-        else: 
-            self.storage[address] = [key, value]
-
-
-
         
+        if self.storage[address]: 
+            
+            warnings.warn('Hash collision')
+            #start at the first node
+            current = self.storage[address]
+            #keep track of previous node
+            prev = None
 
+            #while current: handles if 
+            while current: 
+                #check to see if the current.key = key
+                if current.key == key: 
+                    #if true:  current.value = value
+                    current.value = value
+                    return
+                #move to next node
+                prev = current
+                current = current.next 
+
+            #if we have reached the end of list: add to end of list  
+            prev.next = LinkedPair(key, value)
+
+        else: 
+            self.storage[address] = LinkedPair(key, value)
 
 
     def remove(self, key):
@@ -82,12 +101,24 @@ class HashTable:
         Fill this in.
         '''
         address = self._hash(key)
+        current = self.storage[address]
+        prev = None
+        
+        if current is not None and current.key == key: 
+            self.storage[address] = current.next
+            return
+        while current is not None and current.key != key: 
+            prev = current
+            current = current.next
 
-        if self.storage[address] is None: 
+        prev.next = current.next
+
+        if current is None: 
             warnings.warn('Key is not found')
-        for i in range(len(self.map[address])): 
-            if self.map[address][i][0] == key: 
-                self.map[address].pop(i)
+
+        # for i in range(len(self.map[address])): 
+        #     if self.map[address][i][0] == key: 
+        #         self.map[address].pop(i)
 
 
     def retrieve(self, key):
@@ -100,14 +131,24 @@ class HashTable:
         '''
         address = self._hash(key)
         current = self.storage[address]
-        if len(current):
-            return current[1]
-            # for i in range(len(self.storage)): 
-            #     if current[i][0] == key: 
-            #         return current[i][1]
 
-        return None
+        #linked list 
+        
+        while current is not None and current.key != key: 
+            current = current.next
+        if current: 
+            return current.value
+        else: 
+            return None
 
+        #arrays
+        # if len(current):
+        #     return current[1]
+        #     # for i in range(len(self.storage)): 
+        #     #     if current[i][0] == key: 
+        #     #         return current[i][1]
+
+        
     def resize(self):
         '''
         Doubles the capacity of the hash table and
@@ -115,49 +156,50 @@ class HashTable:
 
         Fill this in.
         '''
+
         self.capacity *= 2
-        #add none space to list
-        new_storage = [None] * self.capacity
-        for i in self.storage: 
-            if i is not None: 
-                new_storage[self._hash(i[0])] = i
-        self.storage = new_storage
+        old_storage = self.storage
+        self.storage = [None] * self.capacity
+        for i in old_storage: 
+            current = i
+            while current is not None: 
+                self.insert(current.key, current.value)
+                current = current.next
 
-
-hm = HashTable(3)
-
-hm.insert('rice', 'whatever')
-hm.insert('gum', 'mint')
-hm.insert('chips', 'bbq flavored')
-hm.resize()
-print(hm.storage)
+        
 
 
 
-# if __name__ == "__main__":
-#     ht = HashTable(2)
 
-#     ht.insert("line_1", "Tiny hash table")
-#     ht.insert("line_2", "Filled beyond capacity")
-#     ht.insert("line_3", "Linked list saves the day!")
 
-#     print("")
 
-#     # Test storing beyond capacity
-#     print(ht.retrieve("line_1"))
-#     print(ht.retrieve("line_2"))
-#     print(ht.retrieve("line_3"))
+if __name__ == "__main__":
+    ht = HashTable(2)
 
-#     # Test resizing
-#     old_capacity = len(ht.storage)
-#     ht.resize()
-#     new_capacity = len(ht.storage)
+    ht.insert("line_1", "Tiny hash table")
+    ht.insert("line_2", "Filled beyond capacity")
+    ht.insert("line_3", "Linked list saves the day!")
 
-#     print(f"\nResized from {old_capacity} to {new_capacity}.\n")
+    print("")
 
-#     # Test if data intact after resizing
-#     print(ht.retrieve("line_1"))
-#     print(ht.retrieve("line_2"))
-#     print(ht.retrieve("line_3"))
+    # Test storing beyond capacity
+    print(ht.retrieve("line_1"))
+    print(ht.retrieve("line_2"))
+    print(ht.retrieve("line_3"))
 
-#     print("")
+    # Test resizing
+    old_capacity = len(ht.storage)
+    ht.resize()
+    new_capacity = len(ht.storage)
+
+    ht.remove('line_3')
+
+    print(f"\nResized from {old_capacity} to {new_capacity}.\n")
+
+    
+    # Test if data intact after resizing
+    print(ht.retrieve("line_1"))
+    print(ht.retrieve("line_2"))
+    print(ht.retrieve("line_3"))
+
+    print("")
