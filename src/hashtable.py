@@ -63,7 +63,7 @@ class HashTable:
         address = self._hash(key)
 
         if self.storage[address]: 
-            warnings.warn('hash collision!')
+            warnings.warn('Hash collision')
         else: 
             self.storage[address] = [key, value]
 
@@ -81,7 +81,13 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        address = self._hash(key)
+
+        if self.storage[address] is None: 
+            warnings.warn('Key is not found')
+        for i in range(len(self.map[address])): 
+            if self.map[address][i][0] == key: 
+                self.map[address].pop(i)
 
 
     def retrieve(self, key):
@@ -109,7 +115,13 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        self.capacity *= 2
+        #add none space to list
+        new_storage = [None] * self.capacity
+        for i in self.storage: 
+            if i is not None: 
+                new_storage[self._hash(i[0])] = i
+        self.storage = new_storage
 
 
 hm = HashTable(3)
@@ -117,9 +129,9 @@ hm = HashTable(3)
 hm.insert('rice', 'whatever')
 hm.insert('gum', 'mint')
 hm.insert('chips', 'bbq flavored')
+hm.resize()
+print(hm.storage)
 
-
-print(hm.retrieve('gum'))
 
 
 # if __name__ == "__main__":
