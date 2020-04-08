@@ -16,43 +16,43 @@ class LinkedPair:
 
 
 class HashTable:
-    '''
+    """
     A hash table that with `capacity` buckets
     that accepts string keys
-    '''
+    """
 
     def __init__(self, capacity):
         self.capacity = capacity  # Number of buckets in the hash table
         self.storage = [None] * capacity
 
     def _hash(self, key):
-        '''
+        """
         Hash an arbitrary key and return an integer.
 
         You may replace the Python hash with DJB2 as a stretch goal.
-        '''
+        """
         hash = 0
         for i in range(0, len(key)):
             hash = (hash + ord(key[i]) ** i) % self.capacity
         return hash
 
     def _hash_djb2(self, key):
-        '''
+        """
         Hash an arbitrary key using DJB2 hash
 
         OPTIONAL STRETCH: Research and implement DJB2
-        '''
+        """
         pass
 
     def _hash_mod(self, key):
-        '''
+        """
         Take an arbitrary key and return a valid integer index
         within the storage capacity of the hash table.
-        '''
+        """
         return self._hash(key) % self.capacity
 
     def insert(self, key, value):
-        '''
+        """
         Store the value with the given key.
 
         # Part 1: Hash collisions should be handled with an error warning. (Think about and
@@ -61,13 +61,13 @@ class HashTable:
         # Part 2: Change this so that hash collisions are handled with Linked List Chaining.
 
         Fill this in.
-        '''
+        """
 
         address = self._hash(key)
 
         if self.storage[address]:
 
-            warnings.warn('Hash collision')
+            warnings.warn("Hash collision")
             # start at the first node
             current = self.storage[address]
             # keep track of previous node
@@ -77,7 +77,7 @@ class HashTable:
             while current:
                 # check to see if the current.key = key
                 if current.key == key:
-                    #if true:  current.value = value
+                    # if true:  current.value = value
                     current.value = value
                     return
                 # move to next node
@@ -91,13 +91,13 @@ class HashTable:
             self.storage[address] = LinkedPair(key, value)
 
     def remove(self, key):
-        '''
+        """
         Remove the value stored with the given key.
 
         Print a warning if the key is not found.
 
         Fill this in.
-        '''
+        """
         # create address for key
         address = self._hash(key)
 
@@ -128,16 +128,16 @@ class HashTable:
 
         # return not found
         if current is None:
-            warnings.warn('Key is not found')
+            warnings.warn("Key is not found")
 
     def retrieve(self, key):
-        '''
+        """
         Retrieve the value stored with the given key.
 
         Returns None if the key is not found.
 
         Fill this in.
-        '''
+        """
         address = self._hash(key)
 
         current = self.storage[address]
@@ -163,12 +163,12 @@ class HashTable:
         #     #         return current[i][1]
 
     def resize(self):
-        '''
+        """
         Doubles the capacity of the hash table and
         rehash all key/value pairs.
 
         Fill this in.
-        '''
+        """
 
         # double the capacity
         self.capacity *= 2
