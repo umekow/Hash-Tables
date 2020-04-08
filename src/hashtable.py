@@ -32,7 +32,7 @@ class HashTable:
         """
         hash = 0
         for i in range(0, len(key)):
-            hash = (hash + ord(key[i]) ** i) % self.capacity
+            hash = (hash + ord(key[i])**i) % self.capacity
         return hash
 
     def _hash_djb2(self, key):
