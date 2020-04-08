@@ -28,7 +28,7 @@ class HashTable:
 
         You may replace the Python hash with DJB2 as a stretch goal.
         '''
-        hash = 2505
+        hash = 0
         for i in range(0, len(key)): 
             hash = (hash + ord(key[i]) ** i) % self.capacity
         return hash
@@ -100,25 +100,38 @@ class HashTable:
 
         Fill this in.
         '''
+        #create address for key
         address = self._hash(key)
+
+        #go to first node located at that address
         current = self.storage[address]
+
+        #keep track of previous node
         prev = None
         
+        #if there is a node and that node's key is the key we are looking for
         if current is not None and current.key == key: 
+
+            #replace the head with the next node
             self.storage[address] = current.next
             return
-        while current is not None and current.key != key: 
+
+        #while there is a node and the node's key is not the key we are trying to remove go to the next until we find correct node
+        while current is not None and current.key != key:
+
+            #current node becomes previous
             prev = current
+
+            #current node is the next node
             current = current.next
 
+        #replace the node with the next node 
         prev.next = current.next
 
+        #return not found
         if current is None: 
             warnings.warn('Key is not found')
 
-        # for i in range(len(self.map[address])): 
-        #     if self.map[address][i][0] == key: 
-        #         self.map[address].pop(i)
 
 
     def retrieve(self, key):
@@ -130,14 +143,19 @@ class HashTable:
         Fill this in.
         '''
         address = self._hash(key)
+
         current = self.storage[address]
 
         #linked list 
-        
+        #if current is not none and its key is not the key we are looking for ,iterate through linked list until found
         while current is not None and current.key != key: 
             current = current.next
+
+        #if current is not None
         if current: 
             return current.value
+
+        #reached the end of list and key has not been found
         else: 
             return None
 
@@ -157,14 +175,30 @@ class HashTable:
         Fill this in.
         '''
 
+        #double the capacity
         self.capacity *= 2
+
+        #store self.storage in new variable
         old_storage = self.storage
+
+        #replace storage with new array that has the right lenght
         self.storage = [None] * self.capacity
+        
+        current = None 
+        #for each element in old_storage
         for i in old_storage: 
-            current = i
-            while current is not None: 
-                self.insert(current.key, current.value)
-                current = current.next
+            #insert linked list into self storage :
+            if i is not None: 
+                current = i
+                #while there is another node 
+                while current is not None:
+                    #insert the node into hashtable
+                    self.insert(current.key, current.value)
+
+                    #move to next node
+                    current = current.next
+               
+            
 
         
 
@@ -192,7 +226,7 @@ if __name__ == "__main__":
     ht.resize()
     new_capacity = len(ht.storage)
 
-    ht.remove('line_3')
+   
 
     print(f"\nResized from {old_capacity} to {new_capacity}.\n")
 
